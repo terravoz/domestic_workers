@@ -72,29 +72,6 @@ function claro_menu() {
 }
 
 function claro_admin_settings_form() {
-  /*$form['claro_sms_footnote'] = array(
-    '#type' => 'textfield',
-    '#title' => t('SMS footnote'),
-    '#description' => t('SMS footnote to apply at end of each SMS sent by the system'),
-    '#default_value' => variable_get('claro_sms_footnote', ''),
-  );*/
-
-  /*$form['claro_news_script_number'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Phone number for NannyVan News Recording'),
-    '#description' => t('Phone number to be used for NannyVan News Recording.
-    Number must be in the <a target="_blank" href="http://en.wikipedia.org/wiki/E.164">E.164</a> format.
-    Supported formats include:
-    <ul>
-    <li>tel: Phone Number - must be proceeded by a + and the country code (i.e. +14155551212 for a US #)</li>
-    </ul>
-    '),
-    '#size' => 40,
-    '#maxlength' => 255,
-    '#default_value' => variable_get('claro_news_script_number', '+13479675529'),
-    '#required' => TRUE,
-  );*/
-
   $form['claro_sms_help'] = array(
     '#type' => 'textarea',
     '#title' => t('SMS help'),
@@ -154,12 +131,10 @@ function claro_node_presave($node) {
     }
 
     if(!$user->uid && !$node->field_opt_in['und'][0]['value']) {
-      watchdog('claro', 'sending verification');
       //Send verification only for guest users
       $number = $node->field_phone_number['und'][0]['vnid'];
       $call = new VoipCall();
       $call->setDestNumber($number);
-      //$text = 'Reply Y to give permission to join the mobile list.';
       $text = variable_get('claro_opt_message',
         '[Company] would like to send you SMS reminders @ this number. X/week. HELP for help. STOP to end. Msg&data rates may apply. Reply KEYWORD to confirm today.');
       //@todo: use queue?
@@ -193,7 +168,6 @@ function claro_form_alter(&$form, &$form_state, $form_id) {
     $form["options"]["sticky"]["#type"] = "hidden";
   }
   else if($form_id == 'broadcast_node_form') {
-   //_d($form);
     drupal_set_title(t('New message blast'));
     drupal_add_js(drupal_get_path('module', 'claro').'/claro.js');
     $form['actions']['submit']['#value'] = t('Start');
@@ -204,33 +178,12 @@ function claro_form_alter(&$form, &$form_state, $form_id) {
 
     $form['actions']['submit']['#attributes'] =
       array('onclick' => 'return confirm("It is important to test your message blast before actually doing it. Are you sure you want to start sending your messages now?");');
-
-    //$form['actions']['preview']['#submit'] = array('claro_broadcast_node_test');
-    //so the $form_state['nid']  is available
-    //$form['actions']['submit']['#submit'][]  = 'claro_broadcast_node_form_submit';
   }
   else if ($form_id == 'episode_node_form'){
     drupal_add_js(drupal_get_path('module', 'claro').'/claro.js');
   }
   return $form;
 }
-
-/*Send announcement to test number*/
-/*
-function claro_broadcast_node_test($form, &$form_state) {
-  $call = new VoipCall();
-  $call->setDestNumber($form_state['values']['field_test_phone_number']['und'][0]['vnid']);
-  $text = $form_state['values']['body']['und'][0]['value'];
-  //@todo: use queue?
-  voip_text($text, $call);
-  drupal_set_message('SMS sent to test number '.$form_state['values']['field_test_phone_number']['und'][0]['vnid']);
-
-  $form_state['rebuild'] = TRUE;
-}*/
-
-
-
-
 
 function claro_get_phone_number($phone_number) {
   $query = db_select('voipnumber', 'vn');
@@ -244,31 +197,6 @@ function claro_get_phone_number($phone_number) {
     return $phone_number;
   }
   return NULL;
-}
-/*
-function _claro_get_phone_numbers() {
-  $phone_numbers = array();
-  $query = new EntityFieldQuery();
-  $query->entityCondition('entity_type', 'node')
-    ->propertyCondition('type', 'phone_number')
-    ->propertyCondition('status', 1)
-    ->addMetaData('account', user_load(1)); // Run the query as user 1.
-  $result = $query->execute();
-  if (isset($result['node'])) {
-    $phone_number_nids = array_keys($result['node']);
-    $phone_number_items = node_load_multiple($phone_number_nids);
-    foreach ($phone_number_items as $node) {
-      $phone_numbers[$node->field_phone_number['und'][0]['vnid']] = $node->field_phone_number['und'][0]['vnid'];
-    }
-  }
-watchdog('debug', 'pn '.print_r($phone_numbers,true));
-  return $phone_numbers;
-}*/
-function _d($obj) {
-  print '<pre>';
-  var_dump($obj);
-  print '</pre>';
-  die();
 }
 
 /*VBO Actions*/
@@ -337,8 +265,6 @@ function claro_return_tags_form($options, $op = 'add') {
       '#type' => 'textfield',
       '#default_value' => '',
       '#title' => 'or create new groups',
-      //'#autocomplete_path' => 'taxonomy/autocomplete/field_groups',
-      //'#element_validate' => array('taxonomy_autocomplete_validate'),
     );
   }
   return $form;
@@ -352,7 +278,6 @@ function claro_return_tags_submit($form, $form_state) {
       $return['tags'][$tid] = $tid;
     }
   }
-  //$return['tags'] = $form_state['values']['tags'];
   return $return;
 }
 
@@ -365,16 +290,12 @@ function claro_remove_tags_submit($form, $form_state) {
 }
 
 function claro_remove_tags($entity, $context = array()) {
-watchdog('debug', print_r($context, true));
-  //watchdog('debug', print_r($entity, true));
-
   if($context['tags']) {
     foreach($entity->field_groups['und'] as $delta => $groups) {
       if(in_array($groups['tid'], $context['tags'])) {
         unset($entity->field_groups['und'][$delta]);
       }
     }
-    watchdog('debug', print_r($entity, true));
    node_save($entity);
   }
 }
@@ -405,7 +326,6 @@ function claro_add_tags_validate($form, $form_state) {
     // See if the term exists in the chosen vocabulary and return the tid;
     // otherwise, create a new 'autocreate' term for insert/update.
     if ($possibilities = taxonomy_term_load_multiple(array(), array('name' => trim($typed_term), 'vid' => 2))) {
-      //$term = array_pop($possibilities);
       form_set_error('new_tags', 'This tag already exists!');
     }
   }
@@ -413,13 +333,11 @@ function claro_add_tags_validate($form, $form_state) {
 
 function claro_add_tags_submit($form, $form_state) {
   $return =  claro_return_tags_submit($form, $form_state);
-  //dpm($form_state['values']);
   $new_tags = _claro_taxonomy_create_tags($form_state['values']['new_tags'], 2);
   foreach($new_tags as $new_tag) {
       $return['tags'][$new_tag['tid']] = $new_tag['tid'];
   }
-  watchdog('debug', print_r($new_tags, true));
-  watchdog('debug', print_r($return, true));
+
   return $return;
 }
 
@@ -466,7 +384,6 @@ function claro_send_opt_invitations_submit($form, $form_state) {
 }
 
 function claro_send_opt_invitations($entity, $context = array()) {
-  //watchdog('debugoptin', print_r($context,true));
   if(isset($entity->field_phone_number['und'][0]['vnid'])) {
     $vn = VoipNumber::load($entity->field_phone_number['und'][0]['real_vnid']);
     $options = array(
@@ -475,12 +392,6 @@ function claro_send_opt_invitations($entity, $context = array()) {
     );
     voipqueue_add_text($vn->getNumber(), $context['message'], $options);
   }
-
-  /*$phone_numbers = voipnumber_blast_get_numbers_from_groups($form_state['values']['field_select_destination']['und']);
-
-  drupal_set_message('Announcement queued for '.count($phone_numbers).' phone numbers.');
-
-  voipnumber_blast_create_queue($blast_id, $phone_numbers, $message);*/
 }
 
 function claro_migrate_numbers() {

@@ -93,9 +93,6 @@ function nannyvan_news_voipscript_load_script($script_name, $options=NULL) {
           $script->addRunIvrMenu($p_options_menu, $input_options, $p_invalid_msg);
           $script->addGoto('%ivr_option_selected');
 
-          /*$script->addLabel($current_info);
-          $script->addSay($info);
-          $script->addGoto('playback_menu');*/
         }
       }
 
@@ -126,13 +123,6 @@ function nannyvan_news_voipscript_load_script($script_name, $options=NULL) {
 function _nannyvan_news_get_blogs() {
   $blogs = array();
 
-  /*$result = db_select('node', 'n')
-  ->fields('n', array('nid'))
-  ->condition('type', 'nannyvan_audio_news')
-  ->condition('status', 0, '<>')
-  ->orderBy('changed', 'DESC')
-  ->execute();*/
-
   $view = views_get_view('news_episode_management');
   $view->preview('page');
   foreach ($view->result as $res) {
@@ -154,26 +144,6 @@ function _nannyvan_news_get_blogs() {
 
     $blogs[] = $blog;
   }
-
-  /*foreach ($result as $o) {
-    $n = node_load($o->nid);
-    $blog = array();
-    $blog['nid'] = $n->nid;
-    $blog['changed'] = $n->changed;
-
-    $field_audio = $n->field_nannyvan_news_audio;
-    if ($field_audio['und'][0]) {
-      $audio_url = file_create_url($field_audio['und'][0]['uri']);
-      $blog['body'] = $audio_url;
-    }
-
-    if (!$blog['body']) {
-      //If no audio then load text version
-      $blog['body'] = $n->body['und'][0]['value'];
-    }
-
-    $blogs[] = $blog;
-  }*/
 
   return $blogs;
 }
