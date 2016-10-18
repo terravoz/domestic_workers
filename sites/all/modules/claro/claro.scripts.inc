@@ -37,10 +37,11 @@ function claro_voipscript_load_script($script_name, $options = NULL) {
 
 
       $script->addLabel('language_selection');
-      $p_main_menu[] = v("Para Espanol, oprima uno. For English, press two. ");
+      $p_main_menu[] = v("Para Espanol, oprima uno. For English, press two. Para português, pressione 3. ");
       $input_options = array(
         '1' => 'spanish_version',
         '2' => 'english_version',
+        '3' => 'portugese_version',
         '#' => 'invalid_option',
         'i' => 'invalid_option',
         't' => 'invalid_option'
@@ -55,7 +56,8 @@ function claro_voipscript_load_script($script_name, $options = NULL) {
       $script->addGoto('hang_up');
 
       $script->addLabel('portugese_version');
-      $script->addGosub('claro_coming_soon', $options);
+      $options['voice'] = 'claro-portugese';
+      $script->addGosub('claro_intro_script', $options);
       $script->addGoto('language_selection');
 
 
@@ -77,7 +79,13 @@ function claro_voipscript_load_script($script_name, $options = NULL) {
       $script->addSay(v("If this is an emergency, hang up and dial 9 1 1. "));
       $script->addSay(v("Welcome house cleaners, nannies, and caregivers! You have reached the Domestic Worker App - accessible by any kind of phone. "));
 
-      $script->addGosub('claro_main_menu_script', $options);
+      //@todo: test this
+      if($voice == 'portugese_version') {
+        $script->addGosub('claro_main_menu_pt_script', $options);
+      }
+      else {
+        $script->addGosub('claro_main_menu_script', $options);
+      }
       $script->addHangup();
       break;
     case 'claro_main_menu_script':
@@ -198,7 +206,104 @@ To return to the main menu, press the pound key.
       $script->addLabel('go_back');
       $script->addReturn();
       break;
+    case 'claro_main_menu_pt_script':
+      $script = new VoipScript('claro_main_menu_pt_script');
+      $voice = $options['voice'];
+      voipvoice_set_current_voice($voice);
 
+      $script->addLabel('options_menu');
+
+      $p_options_menu = v("Para saber dos seus direitos como trabalhador doméstico em massachusetts, presione a tecla 1.
+Para entrar em contato com o centro do trabalhador brasileiro, pressione a tecla 2. 
+Para entrar em contato com a procuradoria do estado de massachusetts, pressione a tecla 3. 
+Para informações sobre o aplicativo dos trabalhadores domésticos pressione a tecla 4. 
+Para episódios em inglês ou espanhol, pressione a tecla 5. 
+Para repetir estas opções, pressione a tecla asterisco. 
+      ");
+
+      $input_options = array(
+        '1' => 'massachusetts_episodes',
+        '2' => 'brazilian_working_center',
+        '3' => 'attorney_office',
+        '4' => 'domestic',
+        '5' => 'go_back',
+        '*' => 'repeat',
+        '#' => 'invalid_option',
+        'i' => 'invalid_option',
+        't' => 'invalid_option'
+      );
+      $p_invalid_msg = v('Oops! That option is invalid. ');
+      $script->addRunIvrMenu($p_options_menu, $input_options, $p_invalid_msg);
+      $script->addGoto('%ivr_option_selected');
+
+      $script->addLabel('massachusetts_episodes');
+      $script->addGosub('claro_play_episodes_pt', $options);
+      $script->addGoto('options_menu');
+
+      $script->addLabel('brazilian_working_center');
+      //$script->addSay(v('Your call will now be redirected to New Day New Standard. '));
+      $script->addDial('+16177838001');
+      $script->addHangup();
+
+      $script->addLabel('attorney_office');
+      //$script->addSay(v('Your call will now be redirected to New Day New Standard. '));
+      //$script->addDial('+16177838001');
+      $script->addHangup();
+
+      $script->addLabel('domestic');
+      $script->addGosub('about_domestic_pt', $options);
+      $script->addGoto('options_menu');
+
+      $script->addLabel('go_back');
+      $script->addReturn();
+
+      break;
+    case 'claro_play_episodes_pt':
+      $script = new VoipScript('claro_play_episodes_pt');
+      $voice = $options['voice'];
+      voipvoice_set_current_voice($voice);
+
+      $script->addLabel('options_menu');
+      $p_options_menu = v("PT EPISODES MENU");
+
+      $input_options = array(
+        '1' => 'da_lungs',
+        //'2' => 'bed_bug',
+        //'3' => 'fashion',
+        '#' => 'go_back',
+        'i' => 'invalid_option',
+        't' => 'invalid_option'
+      );
+      $p_invalid_msg = v('Oops! That option is invalid. ');
+      $script->addRunIvrMenu($p_options_menu, $input_options, $p_invalid_msg);
+      $script->addGoto('%ivr_option_selected');
+
+      $script->addLabel('da_lungs');
+      $options['story_id'] = 13;
+      $script->addGosub('claro_play_story_script', $options);
+      $script->addGoto('options_menu');
+
+      $script->addLabel('go_back');
+      $script->addReturn();
+      break;
+    case 'about_domestic_pt':
+      $script = new VoipScript('about_domestic_pt');
+      $voice = $options['voice'];
+      voipvoice_set_current_voice($voice);
+      $p_options_menu = v("Acessivel por qualquer tipo de telefone, o aplicativo dos trabalhadores domésticos presta...");
+
+      $input_options = array(
+        '#' => 'go_back',
+        'i' => 'invalid_option',
+        't' => 'invalid_option'
+      );
+      $p_invalid_msg = v('Oops! That option is invalid. ');
+      $script->addRunIvrMenu($p_options_menu, $input_options, $p_invalid_msg);
+      $script->addGoto('%ivr_option_selected');
+
+      $script->addLabel('go_back');
+      $script->addReturn();
+      break;
     case 'claro_play_story_script':
       $script = new VoipScript('claro_play_story_script');
       $story_id = $options['story_id'];
