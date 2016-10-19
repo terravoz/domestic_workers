@@ -66,8 +66,8 @@ function claro_voipscript_load_script($script_name, $options = NULL) {
       $script->addGosub('claro_intro_script', $options);
       $script->addGoto('hang_up');
 
-      $script->addLabel('invalid_option');
-      $script->addGoto('hang_up');
+      //$script->addLabel('invalid_option');
+      //$script->addGoto('hang_up');
 
       $script->addLabel('hang_up');
       $script->addHangup();
@@ -157,7 +157,7 @@ function claro_voipscript_load_script($script_name, $options = NULL) {
       $script->addLabel('repeat');
       $script->addGoto('options_menu');
 
-      $script->addLabel('invalid_option');
+      //$script->addLabel('invalid_option');
 
       $script->addReturn();
       break;
@@ -245,12 +245,14 @@ Para repetir estas opções, pressione a tecla asterisco.
       $script->addHangup();
 
       $script->addLabel('attorney_office');
-      //$script->addSay(v('Your call will now be redirected to New Day New Standard. '));
-      //$script->addDial('+16177838001');
+      $script->addDial('+16177273465');
       $script->addHangup();
 
       $script->addLabel('domestic');
       $script->addGosub('about_domestic_pt', $options);
+      $script->addGoto('options_menu');
+
+      $script->addLabel('repeat');
       $script->addGoto('options_menu');
 
       $script->addLabel('go_back');
@@ -782,9 +784,7 @@ function claro_get_episode($nid, $voice) {
     //If no audio then load text version
     $episode['body'] = $translated_node->body['und'][0]['value'];
   }
-  watchdog('debug', print_r($episode,true));
-  watchdog('debug', $voice);
-  watchdog('debug', print_r($voipvoice,true));
+
   return $episode;
 }
 
