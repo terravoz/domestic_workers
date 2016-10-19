@@ -79,7 +79,6 @@ function claro_voipscript_load_script($script_name, $options = NULL) {
       $script->addSay(v("If this is an emergency, hang up and dial 9 1 1. "));
       $script->addSay(v("Welcome house cleaners, nannies, and caregivers! You have reached the Domestic Worker App - accessible by any kind of phone. "));
 
-      //@todo: test this
       if($voice == 'claro-portugese') {
         $script->addGosub('claro_main_menu_pt_script', $options);
       }
@@ -777,6 +776,7 @@ function claro_get_episode($nid, $voice) {
     //If no audio then load text version
     $episode['body'] = $translated_node->body['und'][0]['value'];
   }
+  watchdog('debug', print_r($episode,true));
   return $episode;
 }
 

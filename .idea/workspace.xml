@@ -29,8 +29,8 @@
       <file leaf-file-name="claro.scripts.inc" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/sites/all/modules/claro/claro.scripts.inc">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="856">
-              <caret line="821" column="2" selection-start-line="821" selection-start-column="2" selection-end-line="821" selection-end-column="2" />
+            <state relative-caret-position="601">
+              <caret line="778" column="44" selection-start-line="778" selection-start-column="44" selection-end-line="778" selection-end-column="44" />
               <folding />
             </state>
           </provider>
@@ -364,12 +364,12 @@
       <workItem from="1476463644070" duration="354000" />
       <workItem from="1476714274232" duration="460000" />
       <workItem from="1476801374011" duration="3047000" />
-      <workItem from="1476870950711" duration="4104000" />
+      <workItem from="1476870950711" duration="4540000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="9083000" />
+    <option name="totallyTimeSpent" value="9519000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1920" height="1080" extended-state="0" />
@@ -849,8 +849,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/sites/all/modules/claro/claro.scripts.inc">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="856">
-          <caret line="821" column="2" selection-start-line="821" selection-start-column="2" selection-end-line="821" selection-end-column="2" />
+        <state relative-caret-position="601">
+          <caret line="778" column="44" selection-start-line="778" selection-start-column="44" selection-end-line="778" selection-end-column="44" />
           <folding />
         </state>
       </provider>
