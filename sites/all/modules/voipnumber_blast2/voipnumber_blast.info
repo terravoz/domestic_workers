@@ -1,0 +1,9 @@
+name = Voipnumber Blast
+description = A description of what your module does.
+core = 7.x
+project = "voipnumber_blast"
+package = "Callblast"
+
+dependencies[] = voipqueue
+dependencies[] = voipnumberfield
+
