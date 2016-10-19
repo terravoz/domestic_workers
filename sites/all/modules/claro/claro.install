@@ -50,6 +50,11 @@ function claro_uninstall() {
 }
 
 function claro_update_7001(&$sandbox) {
+  //Enable pt language
+  include_once DRUPAL_ROOT . '/includes/locale.inc';
+  locale_add_language('pt');
+
+  //Create pt voipvoice
   $voice3 = array(
     'name' => 'claro-portugese',
     'gender' => 'woman',
@@ -57,5 +62,9 @@ function claro_update_7001(&$sandbox) {
     'language' => 'pt',
     'lexicon' => 'claro_lexicon',
   );
-  voipvoice_create_voice($voice3);
+  $res = voipvoice_create_voice($voice3);
+  if(!$res) {
+    // In case of an error, simply throw an exception with an error message.
+    throw new DrupalUpdateException('Claro update failed.');
+  }
 }
