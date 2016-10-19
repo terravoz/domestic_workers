@@ -1,5 +1,6 @@
 <?php
 // $Id$
+//@todo: invalid_option should be label in case of timeout? http://void.media.mit.edu/domestic_workers/?q=admin/reports/event/95439
 /**
  * @file
  * Audio Blog VoIP Scripts and helper functions
@@ -42,9 +43,9 @@ function claro_voipscript_load_script($script_name, $options = NULL) {
         '1' => 'spanish_version',
         '2' => 'english_version',
         '3' => 'portugese_version',
-        '#' => 'invalid_option',
-        'i' => 'invalid_option',
-        't' => 'invalid_option'
+        //'#' => 'invalid_option',
+        'i' => 'hang_up',
+        't' => 'hang_up'
       );
       $p_invalid_msg = v('Oops! That option is invalid. ');
       $script->addRunIvrMenu($p_main_menu, $input_options, $p_invalid_msg);
