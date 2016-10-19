@@ -80,3 +80,8 @@ function claro_update_7002(&$sandbox) {
   //Enable translations for Episode CT
   variable_set('language_content_type_episode',TRANSLATION_ENABLED);
 }
+
+function claro_update_7003(&$sandbox) {
+  variable_set('audiofield_audioplayer', 'html5');
+  variable_set('audiofield_audioplayer_wav', 'html5');
+}

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d441e407-97b6-4f0f-ae32-f19d53ab08e4" name="Default" comment="" />
+    <list default="true" id="d441e407-97b6-4f0f-ae32-f19d53ab08e4" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sites/all/modules/claro/claro.install" afterPath="$PROJECT_DIR$/sites/all/modules/claro/claro.install" />
+    </list>
     <ignored path="nannyvan_dev2.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -24,7 +26,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="claro.scripts.inc" pinned="false" current-in-tab="true">
+      <file leaf-file-name="claro.scripts.inc" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sites/all/modules/claro/claro.scripts.inc">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="64">
@@ -34,11 +36,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="claro.install" pinned="false" current-in-tab="false">
+      <file leaf-file-name="claro.install" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/sites/all/modules/claro/claro.install">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="220">
-              <caret line="60" column="45" selection-start-line="60" selection-start-column="45" selection-end-line="60" selection-end-column="45" />
+            <state relative-caret-position="535">
+              <caret line="85" column="54" selection-start-line="85" selection-start-column="54" selection-end-line="85" selection-end-column="54" />
               <folding />
             </state>
           </provider>
@@ -362,12 +364,12 @@
       <workItem from="1476463644070" duration="354000" />
       <workItem from="1476714274232" duration="460000" />
       <workItem from="1476801374011" duration="3047000" />
-      <workItem from="1476870950711" duration="3303000" />
+      <workItem from="1476870950711" duration="3490000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="8282000" />
+    <option name="totallyTimeSpent" value="8469000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1920" height="1080" extended-state="0" />
@@ -837,18 +839,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sites/all/modules/claro/claro.install">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="220">
-          <caret line="60" column="45" selection-start-line="60" selection-start-column="45" selection-end-line="60" selection-end-column="45" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/sites/all/modules/claro/claro.scripts.inc">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="64">
           <caret line="538" column="37" selection-start-line="538" selection-start-column="35" selection-end-line="538" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sites/all/modules/claro/claro.install">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="535">
+          <caret line="85" column="54" selection-start-line="85" selection-start-column="54" selection-end-line="85" selection-end-column="54" />
           <folding />
         </state>
       </provider>
