@@ -753,6 +753,7 @@ function _claro_sms_process_request($msg, $caller_number, $dest_number, $call_id
 }
 
 function claro_get_episode($nid, $voice) {
+  global $user;
   $n = node_load($nid);
   if (!$n) {
     return NULL;
@@ -760,15 +761,20 @@ function claro_get_episode($nid, $voice) {
 
   $voipvoice = voipvoice_get_voice($voice);
   $lang = $voipvoice['language'];
+  //Switch the user, because translation_node_get_translations will not return any nodes since VoIP Drupal script runs as anon user
+  $current_user = $user;
+  $user = user_load(1);
   $translations = translation_node_get_translations($n->tnid);
   $translated_node = (isset($translations[$lang]) ? node_load($translations[$lang]->nid) : $n);
-  $field_audio = $translated_node->field_audio;
+  //switch back to current user
+  $user = $current_user;
+
   $episode = array();
   $episode['nid'] = $translated_node->nid;
   $episode['changed'] = $translated_node->field_episode_date['und'][0]['value'];
 
-  if ($field_audio['und'][0]) {
-    $audio_url = file_create_url($field_audio['und'][0]['uri']);
+  if ($translated_node->field_audio['und'][0]) {
+    $audio_url = file_create_url($translated_node->field_audio['und'][0]['uri']);
     $episode['body'] = $audio_url;
   }
 
