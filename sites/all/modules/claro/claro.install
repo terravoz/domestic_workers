@@ -68,3 +68,15 @@ function claro_update_7001(&$sandbox) {
     throw new DrupalUpdateException('Claro update failed.');
   }
 }
+
+function claro_update_7002(&$sandbox) {
+  //Enable es language
+  include_once DRUPAL_ROOT . '/includes/locale.inc';
+  locale_add_language('es');
+
+  //Enable content translation module
+  module_enable(array('translation'));
+
+  //Enable translations for Episode CT
+  variable_set('language_content_type_episode',TRANSLATION_ENABLED);
+}
