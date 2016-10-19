@@ -43,7 +43,6 @@ function claro_voipscript_load_script($script_name, $options = NULL) {
         '1' => 'spanish_version',
         '2' => 'english_version',
         '3' => 'portugese_version',
-        //'#' => 'invalid_option',
         'i' => 'hang_up',
         't' => 'hang_up'
       );
@@ -113,9 +112,9 @@ function claro_voipscript_load_script($script_name, $options = NULL) {
         '5' => 'get_information',
         '6' => 'domestic_workers_connect',
         '*' => 'repeat',
-        '#' => 'invalid_option',
-        'i' => 'invalid_option',
-        't' => 'invalid_option'
+        //'#' => 'invalid_option',
+        'i' => 'timeout',
+        't' => 'timeout'
       );
       $p_invalid_msg = v('Oops! That option is invalid. ');
       $script->addRunIvrMenu($p_options_menu, $input_options, $p_invalid_msg);
@@ -158,8 +157,7 @@ function claro_voipscript_load_script($script_name, $options = NULL) {
       $script->addLabel('repeat');
       $script->addGoto('options_menu');
 
-      //$script->addLabel('invalid_option');
-
+      $script->addLabel('timeout');
       $script->addReturn();
       break;
     case 'claro_play_episodes_demo':
@@ -181,8 +179,8 @@ To return to the main menu, press the pound key.
         '2' => 'bed_bug',
         '3' => 'fashion',
         '#' => 'go_back',
-        'i' => 'invalid_option',
-        't' => 'invalid_option'
+        'i' => 'hangup',
+        't' => 'hangup'
       );
       $p_invalid_msg = v('Oops! That option is invalid. ');
       $script->addRunIvrMenu($p_options_menu, $input_options, $p_invalid_msg);
@@ -205,6 +203,9 @@ To return to the main menu, press the pound key.
 
       $script->addLabel('go_back');
       $script->addReturn();
+
+      $script->addLabel('hangup');
+      $script->addHangup();
       break;
     case 'claro_main_menu_pt_script':
       $script = new VoipScript('claro_main_menu_pt_script');
@@ -228,9 +229,9 @@ Para repetir estas opções, pressione a tecla asterisco.
         '4' => 'domestic',
         '5' => 'go_back',
         '*' => 'repeat',
-        '#' => 'invalid_option',
-        'i' => 'invalid_option',
-        't' => 'invalid_option'
+        //'#' => 'invalid_option',
+        'i' => 'hangup',
+        't' => 'hangup'
       );
       $p_invalid_msg = v('Oops! That option is invalid. ');
       $script->addRunIvrMenu($p_options_menu, $input_options, $p_invalid_msg);
@@ -259,6 +260,8 @@ Para repetir estas opções, pressione a tecla asterisco.
       $script->addLabel('go_back');
       $script->addReturn();
 
+      $script->addLabel('hangup');
+      $script->addHangup();
       break;
     case 'claro_play_episodes_pt':
       $script = new VoipScript('claro_play_episodes_pt');
@@ -268,7 +271,11 @@ Para repetir estas opções, pressione a tecla asterisco.
       $script->addLabel('options_menu');
       $p_options_menu = v("PT EPISODES MENU");
 
-      $input_options = array(
+      $end_key = '';
+      $num_digits = 2;
+      $script->addGetInput($p_options_menu, $num_digits, $end_key);
+
+      /*$input_options = array(
         '1' => 'episode1',
         '2' => 'episode2',
         '3' => 'episode3',
@@ -286,13 +293,18 @@ Para repetir estas opções, pressione a tecla asterisco.
       );
       $p_invalid_msg = v('Oops! That option is invalid. ');
       $script->addRunIvrMenu($p_options_menu, $input_options, $p_invalid_msg);
-      $script->addGoto('%ivr_option_selected');
+      $script->addGoto('%ivr_option_selected');*/
+      $script->addGotoIf('episode%input_digits', "^_claro_valid_pt_episode(%input_digits)");
+
+      $script->addSay(v('Oops! That option is invalid. '));
+      $script->addGoto('options_menu');
 
       $first_pt_story_nid = 2767;
       for($i=1;$i<=11;$i++) {
         $script->addLabel('episode'.$i);
         $options['story_id'] = $first_pt_story_nid;
-        $script->addGosub('claro_play_story_script', $options);
+        $script->addSay("You chosed episode ".$i);
+        //$script->addGosub('claro_play_story_script', $options);
         $script->addGoto('options_menu');
         $first_pt_story_nid++;
       }
@@ -841,3 +853,10 @@ function _claro_get_episodes() {
   return $episodes;
 }
 */
+
+function _claro_valid_pt_episode($option) {
+  if($option >= 1 && $option <= 11) {
+    return TRUE;
+  }
+  return FALSE;
+}
