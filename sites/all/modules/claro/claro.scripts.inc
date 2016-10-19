@@ -85,7 +85,7 @@ function claro_voipscript_load_script($script_name, $options = NULL) {
       else {
         $script->addGosub('claro_main_menu_script', $options);
       }
-      $script->addHangup();
+      $script->addReturn();
       break;
     case 'claro_main_menu_script':
       $script = new VoipScript('claro_main_menu_script');
