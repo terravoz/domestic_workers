@@ -268,9 +268,17 @@ Para repetir estas opções, pressione a tecla asterisco.
       $p_options_menu = v("PT EPISODES MENU");
 
       $input_options = array(
-        '1' => 'da_lungs',
-        //'2' => 'bed_bug',
-        //'3' => 'fashion',
+        '1' => 'episode1',
+        '2' => 'episode2',
+        '3' => 'episode3',
+        '4' => 'episode4',
+        '5' => 'episode5',
+        '6' => 'episode6',
+        '7' => 'episode7',
+        '8' => 'episode8',
+        '9' => 'episode9',
+        '10' => 'episode10',
+        '11' => 'episode11',
         '#' => 'go_back',
         'i' => 'invalid_option',
         't' => 'invalid_option'
@@ -279,10 +287,14 @@ Para repetir estas opções, pressione a tecla asterisco.
       $script->addRunIvrMenu($p_options_menu, $input_options, $p_invalid_msg);
       $script->addGoto('%ivr_option_selected');
 
-      $script->addLabel('da_lungs');
-      $options['story_id'] = 13;
-      $script->addGosub('claro_play_story_script', $options);
-      $script->addGoto('options_menu');
+      $first_pt_story_nid = 2767;
+      for($i=1;$i<=11;$i++) {
+        $script->addLabel('episode'.$i);
+        $options['story_id'] = $first_pt_story_nid;
+        $script->addGosub('claro_play_story_script', $options);
+        $script->addGoto('options_menu');
+        $first_pt_story_nid++;
+      }
 
       $script->addLabel('go_back');
       $script->addReturn();
