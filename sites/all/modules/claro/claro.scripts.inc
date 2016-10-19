@@ -539,7 +539,7 @@ To return to the main menu, press the pound key. ");
       $episode = claro_get_episode(85, $voice); //Melnea
       if (!$episode) {
         $script->addSay("Invalid story id. ");
-        $script->addLog("Invalid story id: $story_id. ");
+        //$script->addLog("Invalid story id: $story_id. ");
         $script->addGoto('go_back');
       }
       else {
@@ -758,15 +758,15 @@ function claro_get_episode($nid, $voice) {
   if (!$n) {
     return NULL;
   }
-  if($voice == 'claro-spanish') {
-    $field_audio = $n->field_episode_audio_spanish;
-  }
-  else {
-    $field_audio = $n->field_audio;
-  }
+
+  $voipvoice = voipvoice_get_voice($voice);
+  $lang = $voipvoice['language'];
+  $translations = translation_node_get_translations($n->tnid);
+  $translated_node = (isset($translations[$lang]) ? node_load($translations[$lang]->nid) : $n);
+  $field_audio = $translated_node->field_audio;
   $episode = array();
-  $episode['nid'] = $n->nid;
-  $episode['changed'] = $n->field_episode_date['und'][0]['value'];
+  $episode['nid'] = $translated_node->nid;
+  $episode['changed'] = $translated_node->field_episode_date['und'][0]['value'];
 
   if ($field_audio['und'][0]) {
     $audio_url = file_create_url($field_audio['und'][0]['uri']);
@@ -775,7 +775,7 @@ function claro_get_episode($nid, $voice) {
 
   if (!$episode['body']) {
     //If no audio then load text version
-    $episode['body'] = $n->body['und'][0]['value'];
+    $episode['body'] = $translated_node->body['und'][0]['value'];
   }
   return $episode;
 }
@@ -783,6 +783,7 @@ function claro_get_episode($nid, $voice) {
 /*
 * Returns array of claro nodes
 */
+/*
 function _claro_get_episodes() {
   $episodes = array();
 
@@ -818,3 +819,4 @@ function _claro_get_episodes() {
 
   return $episodes;
 }
+*/
