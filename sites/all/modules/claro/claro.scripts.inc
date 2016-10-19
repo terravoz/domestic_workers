@@ -777,6 +777,8 @@ function claro_get_episode($nid, $voice) {
     $episode['body'] = $translated_node->body['und'][0]['value'];
   }
   watchdog('debug', print_r($episode,true));
+  watchdog('debug', $voice);
+  watchdog('debug', print_r($voipvoice,true));
   return $episode;
 }
 
