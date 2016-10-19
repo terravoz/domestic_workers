@@ -295,6 +295,7 @@ Para repetir estas opções, pressione a tecla asterisco.
       $script->addRunIvrMenu($p_options_menu, $input_options, $p_invalid_msg);
       $script->addGoto('%ivr_option_selected');*/
       $script->addGotoIf('episode%input_digits', "^_claro_valid_pt_episode(%input_digits)");
+      $script->addGotoIf('go_back', "%input_digits == '#'");
 
       $script->addSay(v('Oops! That option is invalid. '));
       $script->addGoto('options_menu');
@@ -303,8 +304,8 @@ Para repetir estas opções, pressione a tecla asterisco.
       for($i=1;$i<=11;$i++) {
         $script->addLabel('episode'.$i);
         $options['story_id'] = $first_pt_story_nid;
-        $script->addSay("You chosed episode ".$i);
-        //$script->addGosub('claro_play_story_script', $options);
+        //$script->addSay("You chosed episode ".$i);
+        $script->addGosub('claro_play_story_script', $options);
         $script->addGoto('options_menu');
         $first_pt_story_nid++;
       }
@@ -320,8 +321,8 @@ Para repetir estas opções, pressione a tecla asterisco.
 
       $input_options = array(
         '#' => 'go_back',
-        'i' => 'invalid_option',
-        't' => 'invalid_option'
+        'i' => 'hangup',
+        't' => 'hangup'
       );
       $p_invalid_msg = v('Oops! That option is invalid. ');
       $script->addRunIvrMenu($p_options_menu, $input_options, $p_invalid_msg);
@@ -329,6 +330,9 @@ Para repetir estas opções, pressione a tecla asterisco.
 
       $script->addLabel('go_back');
       $script->addReturn();
+
+      $script->addLabel('hangup');
+      $script->addHangup();
       break;
     case 'claro_play_story_script':
       $script = new VoipScript('claro_play_story_script');
@@ -365,8 +369,8 @@ If you want to start over, hear the list of episodes or the main menu, press any
         '1' => 'repeat',
         '2' => 'go_back',
         '#' => 'go_back_main_menu',
-        'i' => 'invalid_option',
-        't' => 'invalid_option'
+        'i' => 'hangup',
+        't' => 'hangup'
       );
       $p_invalid_msg = v('Oops! That option is invalid. ');
       $script->addRunIvrMenu($p_episode_outro, $input_options, $p_invalid_msg);
@@ -380,6 +384,9 @@ If you want to start over, hear the list of episodes or the main menu, press any
 
       $script->addLabel('go_back_main_menu');
       $script->addGosub('claro_main_menu_script', $options);
+      $script->addHangup();
+
+      $script->addLabel('hangup');
       $script->addHangup();
       break;
     case 'claro_domestic_script':
@@ -398,8 +405,8 @@ If you want to start over, hear the list of episodes or the main menu, press any
         '2' => 'coming_soon',
         '3' => 'california',
         '#' => 'go_back',
-        'i' => 'invalid_option',
-        't' => 'invalid_option'
+        'i' => 'hangup',
+        't' => 'hangup'
       );
       $p_invalid_msg = v('Oops! That option is invalid. ');
       $script->addRunIvrMenu($p_options_menu, $input_options, $p_invalid_msg);
@@ -420,6 +427,9 @@ If you want to start over, hear the list of episodes or the main menu, press any
 
       $script->addLabel('go_back');
       $script->addReturn();
+
+      $script->addLabel('hangup');
+      $script->addHangup();
 
       break;
     case 'claro_california':
@@ -450,8 +460,8 @@ If you want to start over, hear the list of episodes or the main menu, press any
         '7' => 'timesheets',
         '*' => 'repeat',
         '#' => 'go_back',
-        'i' => 'invalid_option',
-        't' => 'invalid_option'
+        'i' => 'hangup',
+        't' => 'hangup'
       );
 
       $p_invalid_msg = v('Oops! That option is invalid. ');
@@ -498,6 +508,9 @@ If you want to start over, hear the list of episodes or the main menu, press any
 
       $script->addLabel('go_back');
       $script->addReturn();
+
+      $script->addLabel('hangup');
+      $script->addHangup();
       break;
 
     case 'claro_california_play_script':
@@ -524,8 +537,8 @@ If you want to start over, hear the list of episodes or the main menu, press any
         '1' => 'repeat',
         '2' => 'go_back',
         '#' => 'go_back_main_menu',
-        'i' => 'invalid_option',
-        't' => 'invalid_option'
+        'i' => 'hangup',
+        't' => 'hangup'
       );
       $p_invalid_msg = v('Oops! That option is invalid. ');
       $script->addRunIvrMenu($p_episode_outro, $input_options, $p_invalid_msg);
@@ -539,6 +552,9 @@ If you want to start over, hear the list of episodes or the main menu, press any
 
       $script->addLabel('go_back_main_menu');
       $script->addGosub('claro_main_menu_script', $options);
+      $script->addHangup();
+
+      $script->addLabel('hangup');
       $script->addHangup();
       break;
 
@@ -554,8 +570,8 @@ To return to the main menu, press the pound key. ");
       $input_options = array(
         '1' => 'boston',
         '#' => 'go_back',
-        'i' => 'invalid_option',
-        't' => 'invalid_option'
+        'i' => 'hangup',
+        't' => 'hangup'
       );
       $p_invalid_msg = v('Oops! That option is invalid. ');
       $script->addRunIvrMenu($p_options_menu, $input_options, $p_invalid_msg);
@@ -577,6 +593,9 @@ To return to the main menu, press the pound key. ");
 
       $script->addLabel('go_back');
       $script->addReturn();
+
+      $script->addLabel('hangup');
+      $script->addHangup();
       break;
     case 'claro_coming_soon':
       $script = new VoipScript('claro_coming_soon');
@@ -605,8 +624,8 @@ To go back to the main menu, press the pound key. ");
       $input_options = array(
         '*' => 'repeat',
         '#' => 'go_back',
-        'i' => 'invalid_option',
-        't' => 'invalid_option'
+        'i' => 'hangup',
+        't' => 'hangup'
       );
       $p_invalid_msg = v('Oops! That option is invalid. ');
       $script->addRunIvrMenu($p_options_menu, $input_options, $p_invalid_msg);
@@ -617,6 +636,9 @@ To go back to the main menu, press the pound key. ");
 
       $script->addLabel('go_back');
       $script->addReturn();
+
+      $script->addLabel('hangup');
+      $script->addHangup();
 
       break;
     case 'domestic_workers_connect_script':
@@ -635,8 +657,8 @@ To go back to the main menu, press the pound key. ");
         //'1' => 'confirm',
         '*' => 'call_ndwa',
         '#' => 'go_back',
-        'i' => 'invalid_option',
-        't' => 'invalid_option'
+        'i' => 'hangup',
+        't' => 'hangup'
       );
       $p_invalid_msg = v('Oops! That option is invalid. ');
       $script->addRunIvrMenu($p_options_menu, $input_options, $p_invalid_msg);
@@ -650,6 +672,8 @@ To go back to the main menu, press the pound key. ");
       $script->addLabel('go_back');
       $script->addReturn();
 
+      $script->addLabel('hangup');
+      $script->addHangup();
       break;
     
     case 'claro_sms_handler_script':
