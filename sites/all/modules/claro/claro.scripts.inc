@@ -269,7 +269,7 @@ Para repetir estas opções, pressione a tecla asterisco.
       voipvoice_set_current_voice($voice);
 
       $script->addLabel('options_menu');
-      $p_options_menu = v("PT EPISODES MENU");
+      $p_options_menu = v("PT EPISODES MENU. Select episode between 1 to 11.");
 
       $end_key = '';
       $num_digits = 2;
@@ -369,8 +369,8 @@ If you want to start over, hear the list of episodes or the main menu, press any
         '1' => 'repeat',
         '2' => 'go_back',
         '#' => 'go_back_main_menu',
-        'i' => 'hangup',
-        't' => 'hangup'
+        'i' => 'play_story',
+        't' => 'play_story'
       );
       $p_invalid_msg = v('Oops! That option is invalid. ');
       $script->addRunIvrMenu($p_episode_outro, $input_options, $p_invalid_msg);
@@ -384,9 +384,6 @@ If you want to start over, hear the list of episodes or the main menu, press any
 
       $script->addLabel('go_back_main_menu');
       $script->addGosub('claro_main_menu_script', $options);
-      $script->addHangup();
-
-      $script->addLabel('hangup');
       $script->addHangup();
       break;
     case 'claro_domestic_script':
