@@ -49,3 +49,13 @@ function claro_uninstall() {
  voipvoice_delete_lexicon('claro_lexicon');
 }
 
+function claro_update_7001(&$sandbox) {
+  $voice3 = array(
+    'name' => 'claro-portugese',
+    'gender' => 'woman',
+    'description' => 'This is woman Portugese Claro voice.',
+    'language' => 'pt',
+    'lexicon' => 'claro_lexicon',
+  );
+  voipvoice_create_voice($voice3);
+}
