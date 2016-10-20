@@ -1,6 +1,5 @@
 <?php
 // $Id$
-//@todo: invalid_option should be label in case of timeout? http://void.media.mit.edu/domestic_workers/?q=admin/reports/event/95439
 /**
  * @file
  * Audio Blog VoIP Scripts and helper functions
@@ -877,47 +876,6 @@ function claro_get_episode($nid, $voice) {
 
   return $episode;
 }
-
-/*
-* Returns array of claro nodes
-*/
-/*
-function _claro_get_episodes() {
-  $episodes = array();
-
-  $query = new EntityFieldQuery();
-  $query->entityCondition('entity_type', 'node')
-    ->propertyCondition('type', 'episode')
-    ->propertyCondition('status', 1)
-    ->fieldOrderBy('field_episode_date', 'value', 'DESC')
-    ->addMetaData('account', user_load(1)); // Run the query as user 1.
-  $result = $query->execute();
-  if (isset($result['node'])) {
-    $episode_nids = array_keys($result['node']);
-    $episode_items = node_load_multiple($episode_nids);
-    foreach ($episode_items as $n) {
-      $episode = array();
-      $episode['nid'] = $n->nid;
-      $episode['changed'] = $n->field_episode_date['und'][0]['value'];
-
-      $field_audio = $n->field_audio;
-      if ($field_audio['und'][0]) {
-        $audio_url = file_create_url($field_audio['und'][0]['uri']);
-        $episode['body'] = $audio_url;
-      }
-
-      if (!$episode['body']) {
-        //If no audio then load text version
-        $episode['body'] = $n->body['und'][0]['value'];
-      }
-
-      $episodes[] = $episode;
-    }
-  }
-
-  return $episodes;
-}
-*/
 
 function _claro_valid_pt_episode($option) {
   if($option >= 1 && $option <= 11) {
