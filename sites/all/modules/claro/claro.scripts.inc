@@ -89,12 +89,69 @@ function claro_voipscript_load_script($script_name, $options = NULL) {
       if($voice == 'claro-portugese') {
         $script->addGosub('claro_main_menu_pt_script', $options);
       }
+      elseif ($voice == 'claro') {
+        $script->addGosub('claro_main_menu_en_script', $options);
+      }
       else {
-        $script->addGosub('claro_main_menu_en_es_script', $options);
+        $script->addGosub('claro_main_menu_es_script', $options);
       }
       break;
-    case 'claro_main_menu_en_es_script':
-      $script = new VoipScript('claro_main_menu_en_es_script');
+    case 'claro_main_menu_en_script':
+      $script = new VoipScript('claro_main_menu_en_script');
+      $voice = $options['voice'];
+      voipvoice_set_current_voice($voice);
+
+      $script->addLabel('options_menu');
+
+      $p_options_menu = v("Main Menu.
+      To learn about your rights as domestic worker in Massachusetts, press 1.
+      To learn about your rights as domestic worker in California, press 2.
+      To learn about your rights as domestic worker in NY, press 3.
+      To learn about health and safety tips, press 4.
+      For more info about this app, press 5
+      ");
+
+      $input_options = array(
+        '1' => 'massachusetts_episodes',
+        '2' => 'california',
+        '3' => 'ny',
+        '4' => 'play_episodes',
+        '5' => 'get_information',
+        'i' => 'timeout',
+        't' => 'timeout'
+      );
+
+      $p_invalid_msg = v('Oops! That option is invalid. ');
+      $script->addRunIvrMenu($p_options_menu, $input_options, $p_invalid_msg);
+      $script->addGoto('%ivr_option_selected');
+
+      $script->addLabel('massachusetts_episodes');
+      $script->addGosub('claro_massachusetts_episodes', $options);
+      $script->addGoto('options_menu');
+
+      $script->addLabel('california');
+      $script->addGosub('claro_california', $options);
+      $script->addGoto('go_back');
+
+      $script->addLabel('ny');
+      $script->addSay(v('Your call will now be redirected to New Day New Standard. '));
+      $script->addDial('+16466993989');
+      $script->addHangup();
+
+      $script->addLabel('play_episodes');
+      $script->addGosub('claro_play_episodes_demo', $options);
+      $script->addGoto('options_menu');
+
+      $script->addLabel('get_information');
+      $script->addGetInput(v('Here is recording for "ABOUT THE DOMESTIC WORKER APP"'), 1);
+      $script->addGotoIf('options_menu', "^%input_digits");
+      $script->addGoto('options_menu');
+
+      $script->addLabel('timeout');
+      $script->addReturn();
+      break;
+    case 'claro_main_menu_es_script':
+      $script = new VoipScript('claro_main_menu_es_script');
       $voice = $options['voice'];
       voipvoice_set_current_voice($voice);
 
@@ -244,7 +301,7 @@ Para repetir estas opções, pressione a tecla asterisco.
       $script->addGoto('%ivr_option_selected');
 
       $script->addLabel('massachusetts_episodes');
-      $script->addGosub('claro_play_episodes_pt', $options);
+      $script->addGosub('claro_massachusetts_episodes', $options);
       $script->addGoto('options_menu');
 
       $script->addLabel('brazilian_working_center');
@@ -269,37 +326,18 @@ Para repetir estas opções, pressione a tecla asterisco.
       $script->addLabel('hangup');
       $script->addHangup();
       break;
-    case 'claro_play_episodes_pt':
-      $script = new VoipScript('claro_play_episodes_pt');
+    case 'claro_massachusetts_episodes':
+      $script = new VoipScript('claro_massachusetts_episodes');
       $voice = $options['voice'];
       voipvoice_set_current_voice($voice);
 
       $script->addLabel('options_menu');
-      $p_options_menu = v("PT EPISODES MENU. Select episode between 1 to 11.");
+      $p_options_menu = v("Massachusetts EPISODES MENU. Select episode between 1 to 11.");
 
       $end_key = '';
       $num_digits = 2;
       $script->addGetInput($p_options_menu, $num_digits, $end_key);
 
-      /*$input_options = array(
-        '1' => 'episode1',
-        '2' => 'episode2',
-        '3' => 'episode3',
-        '4' => 'episode4',
-        '5' => 'episode5',
-        '6' => 'episode6',
-        '7' => 'episode7',
-        '8' => 'episode8',
-        '9' => 'episode9',
-        '10' => 'episode10',
-        '11' => 'episode11',
-        '#' => 'go_back',
-        'i' => 'invalid_option',
-        't' => 'invalid_option'
-      );
-      $p_invalid_msg = v('Oops! That option is invalid. ');
-      $script->addRunIvrMenu($p_options_menu, $input_options, $p_invalid_msg);
-      $script->addGoto('%ivr_option_selected');*/
       $script->addGotoIf('episode%input_digits', "^_claro_valid_pt_episode(%input_digits)");
       $script->addGotoIf('go_back', "%input_digits == '#'");
 
