@@ -79,16 +79,22 @@ function claro_voipscript_load_script($script_name, $options = NULL) {
       $script->addSay(v("If this is an emergency, hang up and dial 9 1 1. "));
       $script->addSay(v("Welcome house cleaners, nannies, and caregivers! You have reached the Domestic Worker App - accessible by any kind of phone. "));
 
-      if($voice == 'claro-portugese') {
-        $script->addGosub('claro_main_menu_pt_script', $options);
-      }
-      else {
-        $script->addGosub('claro_main_menu_script', $options);
-      }
+      $script->addGosub('claro_main_menu_script', $options);
       $script->addReturn();
       break;
     case 'claro_main_menu_script':
       $script = new VoipScript('claro_main_menu_script');
+      $voice = $options['voice'];
+      voipvoice_set_current_voice($voice);
+      if($voice == 'claro-portugese') {
+        $script->addGosub('claro_main_menu_pt_script', $options);
+      }
+      else {
+        $script->addGosub('claro_main_menu_en_es_script', $options);
+      }
+      break;
+    case 'claro_main_menu_en_es_script':
+      $script = new VoipScript('claro_main_menu_en_es_script');
       $voice = $options['voice'];
       voipvoice_set_current_voice($voice);
 
