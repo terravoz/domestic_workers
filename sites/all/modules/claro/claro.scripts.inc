@@ -75,8 +75,8 @@ function claro_voipscript_load_script($script_name, $options = NULL) {
       $script = new VoipScript('claro_intro_script');
       $voice = $options['voice'];
       voipvoice_set_current_voice($voice);
-      $script->addSay(v("If this is an emergency, hang up and dial 9 1 1. "));
-      $script->addSay(v("Welcome house cleaners, nannies, and caregivers! You have reached the Domestic Worker App - accessible by any kind of phone. "));
+      $script->addSay(v("If this is an emergency, hang up and dial 9 1 1. 
+      Welcome house cleaners, nannies, and caregivers! You have reached the Domestic Worker App - accessible by any kind of phone. "));
 
       $script->addGosub('claro_main_menu_script', $options);
       $script->addReturn();
