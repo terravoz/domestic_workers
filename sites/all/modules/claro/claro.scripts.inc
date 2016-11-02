@@ -88,15 +88,18 @@ function claro_voipscript_load_script($script_name, $options = NULL) {
       if($voice == 'claro-portugese') {
         $script->addGosub('claro_main_menu_pt_script', $options);
       }
-      elseif ($voice == 'claro') {
+      else {
+        $script->addGosub('claro_main_menu_all_script', $options);
+      }
+      /*elseif ($voice == 'claro') {
         $script->addGosub('claro_main_menu_en_script', $options);
       }
       else {
         $script->addGosub('claro_main_menu_es_script', $options);
-      }
+      }*/
       break;
-    case 'claro_main_menu_en_script':
-      $script = new VoipScript('claro_main_menu_en_script');
+    case 'claro_main_menu_all_script':
+      $script = new VoipScript('claro_main_menu_all_script');
       $voice = $options['voice'];
       voipvoice_set_current_voice($voice);
 
