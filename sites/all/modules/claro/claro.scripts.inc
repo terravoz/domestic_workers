@@ -346,7 +346,7 @@ To return to the main menu, press the pound key.
       $script->addSay(v('Oops! That option is invalid. '));
       $script->addGoto('options_menu');
 
-      $first_pt_story_nid = 2767;
+      /*$first_pt_story_nid = 2767;
       for($i=1;$i<=11;$i++) {
         $script->addLabel('episode'.$i);
         $options['story_id'] = $first_pt_story_nid;
@@ -354,7 +354,63 @@ To return to the main menu, press the pound key.
         $script->addGosub('claro_play_story_script', $options);
         $script->addGoto('options_menu');
         $first_pt_story_nid++;
-      }
+      }*/
+
+      $script->addLabel('episode1');
+      $options['story_id'] = 2771;
+      $script->addGosub('claro_play_story_script', $options);
+      $script->addGoto('options_menu');
+
+      $script->addLabel('episode2');
+      $options['story_id'] = 2769;
+      $script->addGosub('claro_play_story_script', $options);
+      $script->addGoto('options_menu');
+
+      $script->addLabel('episode3');
+      $options['story_id'] = 2774;
+      $script->addGosub('claro_play_story_script', $options);
+      $script->addGoto('options_menu');
+
+      $script->addLabel('episode4');
+      $options['story_id'] = 2775;
+      $script->addGosub('claro_play_story_script', $options);
+      $script->addGoto('options_menu');
+
+      $script->addLabel('episode5');
+      $options['story_id'] = 2772;
+      $script->addGosub('claro_play_story_script', $options);
+      $script->addGoto('options_menu');
+
+      $script->addLabel('episode6');
+      $options['story_id'] = 2776;
+      $script->addGosub('claro_play_story_script', $options);
+      $script->addGoto('options_menu');
+
+      $script->addLabel('episode7');
+      $options['story_id'] = 2777;
+      $script->addGosub('claro_play_story_script', $options);
+      $script->addGoto('options_menu');
+
+      $script->addLabel('episode8');
+      $options['story_id'] = 2770;
+      $script->addGosub('claro_play_story_script', $options);
+      $script->addGoto('options_menu');
+
+      $script->addLabel('episode9');
+      $options['story_id'] = 2767;
+      $script->addGosub('claro_play_story_script', $options);
+      $script->addGoto('options_menu');
+
+      $script->addLabel('episode10');
+      $options['story_id'] = 2768;
+      $script->addGosub('claro_play_story_script', $options);
+      $script->addGoto('options_menu');
+
+      $script->addLabel('episode11');
+      $options['story_id'] = 2773;
+      $script->addGosub('claro_play_story_script', $options);
+      $script->addGoto('options_menu');
+
 
       $script->addLabel('go_back');
       $script->addReturn();
