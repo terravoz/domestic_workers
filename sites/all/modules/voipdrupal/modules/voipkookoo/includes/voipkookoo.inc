@@ -132,6 +132,7 @@ function _voipkookoo_call_handler($kookoo_action = NULL, $cid = NULL) {
     $call->setDestNumber($to);
     $call->setCallChannel($channel);
     $call->setCallNetwork($network);
+    VoipEvent::event($call, VoipEvent::INBOUND_CALL);
   }
   else if ($kookoo_action == 'process_inbound_text'
     || $kookoo_action == 'process_sms_framework') {
@@ -151,6 +152,7 @@ function _voipkookoo_call_handler($kookoo_action = NULL, $cid = NULL) {
     if($kookoo_action == 'process_sms_framework') {
       $call->setCallOrigin('smsframework');
     }
+    VoipEvent::event($call, VoipEvent::INBOUND_SMS_RECEIVED);
   }
   else {
     // handle ongoing calls
@@ -296,6 +298,7 @@ function _voipkookoo_call_handler($kookoo_action = NULL, $cid = NULL) {
       case 'process_sms_callback':
         $call = _voipkookoo_process_sms_response($call, $_REQUEST);
         if (strtolower($call->getCallChannel()) == 'text') {
+          $call->setEndTime();
           // update sms status
           $call->save();
           // since 'process_sms_callback' is asynchronous, go back
@@ -963,10 +966,12 @@ function voipkookoo_update_call_status($call, $kookoo_call_status = 'in-progress
         '@cid' => $cid,
       );
       $call->report_error('voipkookoo', $msg, $params);
+      VoipEvent::event($call, VoipEvent::INVALID);
       break;
     case 'invalid_number': // call failed, most likely due to invalid number
       $call->setCallStatus(VoipCall::INVALID);
       $call->setHangupReason(VoipCall::HANGUP_INVALID_NUMBER);
+      VoipEvent::event($call, VoipEvent::INVALID);
       break;
     case 'queued':
       $call->setCallStatus(VoipCall::QUEUED);
@@ -984,16 +989,19 @@ function voipkookoo_update_call_status($call, $kookoo_call_status = 'in-progress
       $hangup_reason = $call->getHangupReason();
       if (!$hangup_reason) {
         $call->setHangupReason(VoipCall::HANGUP_BY_USER);
+        VoipEvent::event($call, VoipEvent::HANGUP_BY_USER);
       }
       break;
     case 'busy':
       $call->setCallStatus(VoipCall::BUSY);
       $call->setHangupReason(VoipCall::HANGUP_BUSY);
+      VoipEvent::event($call, VoipEvent::BUSY);
       break;
     case 'network_congestion':
     case 'exception':
       $call->setCallStatus(VoipCall::NO_ANSWER);
       $call->setHangupReason(VoipCall::HANGUP_NO_ANSWER);
+      VoipEvent::event($call, VoipEvent::INVALID);
       break;
     /*case 'canceled':
       $call->setCallStatus(VoipCall::CANCELED);

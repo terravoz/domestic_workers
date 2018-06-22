@@ -5,9 +5,9 @@ dependencies[] = voipnumber
 dependencies[] = sms_user
 package = VoIP Drupal
 core = 7.x
-; Information added by Drupal.org packaging script on 2014-02-06
-version = "7.x-2.0-beta1+4-dev"
+; Information added by Drupal.org packaging script on 2016-10-11
+version = "7.x-2.0-beta2"
 core = "7.x"
 project = "voipnumber"
-datestamp = "1391720605"
+datestamp = "1476198241"
 

@@ -128,10 +128,11 @@ function _voiptwilio_call_handler($twilio_action, $cid = NULL) {
     $call->setAnsweredBy(VoipCall::ANSWERED_DRUPAL);
     $call->setCallStatus(VoipCall::RINGING);
     $call->setStartTime(REQUEST_TIME);
-	$call->setCallerNumber($from);
+	  $call->setCallerNumber($from);
     $call->setDestNumber($to);
     $call->setCallChannel($channel);
     $call->setCallNetwork($network);
+    VoipEvent::event($call, VoipEvent::INBOUND_CALL);
   }
   else if ($twilio_action == 'process_inbound_text'
     || $twilio_action == 'process_sms_framework') {
@@ -151,6 +152,7 @@ function _voiptwilio_call_handler($twilio_action, $cid = NULL) {
     if($twilio_action == 'process_sms_framework') {
       $call->setCallOrigin('smsframework');
     }
+    VoipEvent::event($call, VoipEvent::INBOUND_SMS_RECEIVED);
   }
   else {
     // handle ongoing calls
@@ -320,7 +322,7 @@ function _voiptwilio_call_handler($twilio_action, $cid = NULL) {
     }
   }
 
-  if ($is_hangup) {
+  if ($call->getCallStatus() == VoipCall::COMPLETED) {
     // determine call duration
     $end_time = $call->setEndTime();
     $start_time = $call->getStartTime();
@@ -974,10 +976,12 @@ function voiptwilio_update_call_status($call, $twilio_call_status = 'in-progress
         '@cid' => $cid,
       );
       $call->report_error('voiptwilio', $msg, $params);
+      VoipEvent::event($call, VoipEvent::INVALID);
       break;
     case 'failed': // call failed, most likely due to invalid number
       $call->setCallStatus(VoipCall::INVALID);
       $call->setHangupReason(VoipCall::HANGUP_INVALID_NUMBER);
+      VoipEvent::event($call, VoipEvent::INVALID);
       break;
     case 'queued':
       $call->setCallStatus(VoipCall::QUEUED);
@@ -993,19 +997,23 @@ function voiptwilio_update_call_status($call, $twilio_call_status = 'in-progress
       $hangup_reason = $call->getHangupReason();
       if (!$hangup_reason) {
         $call->setHangupReason(VoipCall::HANGUP_BY_USER);
+        VoipEvent::event($call, VoipEvent::HANGUP_BY_USER);
       }
       break;
     case 'busy':
       $call->setCallStatus(VoipCall::BUSY);
       $call->setHangupReason(VoipCall::HANGUP_BUSY);
+      VoipEvent::event($call, VoipEvent::BUSY);
       break;
     case 'no-answer':
       $call->setCallStatus(VoipCall::NO_ANSWER);
       $call->setHangupReason(VoipCall::HANGUP_NO_ANSWER);
+      VoipEvent::event($call, VoipEvent::NO_ANSWER);
       break;
     case 'canceled':
       $call->setCallStatus(VoipCall::CANCELED);
       $call->setHangupReason(VoipCall::HANGUP_API_REQUEST);
+      VoipEvent::event($call, VoipEvent::CANCELED);
       break;
   }
   return $call;
@@ -1066,7 +1074,8 @@ function _voiptwilio_process_dial_response($call, $request) {
  */
 function  _voiptwilio_process_sms_response($call, $request) {
   $cid = $call->getCid();
-  $sms_status_tmp = $request['SmsStatus'];
+  //SMSStatus is when sending SMS through Voice channel using <Sms> Twiml, while MessageStatus is for send_text()
+  $sms_status_tmp = isset($request['SmsStatus']) ? $request['SmsStatus'] : $request['MessageStatus'];
   switch ($sms_status_tmp) {
     default:
       $msg = 'Invalid SmsStatus: @status for call cid: @cid';
@@ -1078,6 +1087,7 @@ function  _voiptwilio_process_sms_response($call, $request) {
       return NULL;
       break;
     case 'failed':
+    case 'undelivered':
       $msg = 'SMS sending failed for call cid: @cid. Make sure your Twilio number is sms-enabled.';
       $params = array('@cid' => $cid);
       watchdog('voiptwilio', $msg, $params, WATCHDOG_WARNING);
@@ -1090,10 +1100,12 @@ function  _voiptwilio_process_sms_response($call, $request) {
       $text_status = VoipCall::TEXT_INVALID;
       break;
     case 'sending':
+    case 'queued':
       $text_status = VoipCall::TEXT_SENDING;
       break;
     case 'received': // TODO: this is status is not documented in twilio.com. is this a twilio bug?
     case 'sent':
+    case 'delivered':
       $text_status = VoipCall::TEXT_SENT;
       break;
   }
@@ -1179,7 +1191,7 @@ function _voiptwilio_generate_audio_response($script, $prompt, $loop = 1) {
               //Convert numbers into digits
               $element = _voiptwilio_parse_numbers($element);
             }
-            $response .= "<Say voice='$gender' language='$language'>$element</Say>";
+            $response .= "<Say voice='$gender' language='$language'>".htmlspecialchars($element)."</Say>";
           }
         }
       }

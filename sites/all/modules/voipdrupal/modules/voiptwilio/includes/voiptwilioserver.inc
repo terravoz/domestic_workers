@@ -247,8 +247,8 @@ class VoipTwilioServer extends VoipServer {
     // Instantiate a new Twilio Rest Client
     $client = new TwilioRestClient($account_sid, $auth_token);
 
-    // Initiate a new outbound text by POST'ing to the SMS/Messages resource
-    $twilio_path = "/$api_version/Accounts/$account_sid/SMS/Messages";
+    // Initiate a new outbound text by POST'ing to the Messages resource
+    $twilio_path = "/$api_version/Accounts/$account_sid/Messages";
     $menu_path = 'voip/twilio/callhandler';
     //$cid = $voipcall->getCid();
     $response_url = $menu_path . '/process_sms_callback/' . $cid;
@@ -268,8 +268,6 @@ class VoipTwilioServer extends VoipServer {
     if ($response->IsError) {
       // differentiate between processing errors and higher-level errors
       $twilio_error_code = (string) $response->ResponseXml->RestException->Code;
-
-      watchdog('debug', $twilio_error_code);
       switch ($twilio_error_code) {
         // the following codes are listed in
         //   http://www.twilio.com/docs/errors/reference/
@@ -319,11 +317,10 @@ class VoipTwilioServer extends VoipServer {
     }
     else {
       $rc = TRUE;
-
       // get the new id and status associated with the call
       $xml = $response->ResponseXml;
-      $call_id = (string) $xml->SMSMessage->Sid;
-      $twilio_call_status = (string) $xml->SMSMessage->Status;
+      $call_id = (string) $xml->Message->Sid;
+      $twilio_call_status = (string) $xml->Message->Status;
       $voipcall->setCallId($call_id);
       $voipcall = voiptwilio_update_call_status($voipcall, $twilio_call_status);
       $voipcall->save();
@@ -380,6 +377,7 @@ class VoipTwilioServer extends VoipServer {
         $voipcall->report_error('voiptwilio', $msg, $params);
       }
       else {
+        $voipcall->setCallStatus(VoipCall::COMPLETED);
         $voipcall->setHangupReason(VoipCall::HANGUP_API_REQUEST);
         $voipcall->save();
         $rc = TRUE;
